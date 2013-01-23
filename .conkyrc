@@ -1,38 +1,81 @@
-# Option
-background no
-xftfont Terminus:size=8
-xftalpha 0.8
-update_interval 2.0
-total_run_times 0
-own_window yes
-# own_window_type desktop
+# //// AFFICHAGE et COMPORTEMENT ////
+# si yes, conky sera lancé en “background”: il vous rendra la main.
+background yes
+#couleur
+color1  BA0000  #Rouge  - Temperature forte
+color2  D9EFF5  #Bleu   - 
+color3  FF8A00  #Orange - Temperature moyen
+color4  000000  #
+color5  15AF1C  #Vert   - Temperature correct
+color6  716FFF  #Bleu   - Titre
+# si 'own_window yes', determine le type de fenêtre utilisé par conky.
+own_window_type desktop
+# si yes, conky est transparent: comme 'own_window_argb_value 0'.
 own_window_transparent yes
 own_window_hints undecorated, below, sticky, skip_taskbar, skip_pager
-double_buffer yes
-minimum_size 220 5
-maximum_width 300
-draw_shades no
-draw_outline no
-draw_borders no
-draw_graph_borders yes
+# épaisseur de la bordure en pixels.
+border_width 0
+# fréquence de rafraichissement de conky.
+update_interval 2.0
+# nombre de rechargements de conky avant de quitter. Zéro fait tourner conky indéfiniment.
+total_run_times 0
+# si yes, conky dessine sa propre fenêtre.
+own_window yes
+# si yes, conky force l'encodage local utf-8. requiert XFT.
+override_utf8_locale yes
+# couleur par défaut du texte et des bordures
 default_color white
+# couleur par défaut de l'ombre de la police et des graphiques.
 default_shade_color black
-alignment top_right
-gap_x 2930
+# marge en pixels de la fenêtre conky.
+gap_x 0
 gap_y 0
-no_buffers yes
-cpu_avg_samples 4
-override_utf8_locale no
-uppercase no
-temperature_unit celsius
+# si yes, conky affiche les ombres sous le texte et les graphiques.
+draw_shades yes
+# si yes, conky utilise la police avec un contour.
+draw_outline no
+# si yes, conky affiche une bordure autour du texte.
+draw_borders no
+# si yes, conky dessine une bordure autour des graphiques.
+draw_graph_borders yes
+#alignment top_right
+alignment top_left
 
-#couleur
-color1  BA0000  #Rouge
-color2  FFFFFF  #Blanc
-color3  FF8A00  #Orange
-color4  000000  #Noir
-color5  15AF1C  #Vert
-color6  716FFF  #Titre - Bleu
+# //// AUTRES ////
+# si yes, conky ne recharge pas son fichier de configuration après une modification
+disable_auto_reload no
+# si yes et si 'out_to_console yes', conky rajoute une ligne en fin de fichier
+extra_newline no
+# si yes, envoi des informations de conky au STDOUT.
+out_to_console no
+# si oui, conky ne prend pas en compte le buffer dans le calcul de l'utilisation mémoire.
+double_buffer no
+maximum_width 300
+
+# //// FONT ////
+# si yes, conky utilise les polices 'xft', active l'anti-crenelage…
+use_xft yes
+# Police utilis" par conky
+xftfont anatolian:size=10
+# opacité de la police définie par 'xftfont', 0=transparent, 1=opaque.
+xftalpha 0.8
+# si yes, affiche les caractères en majuscules.
+uppercase no
+
+# //// UNITE ////
+# détermine les unités de température, par défaut: celsius.
+temperature_unit celsius
+# si yes, conky tente d'afficher les valeurs dans un format lisible (Kib,Mib,Gib). si no, conky affiche toutes les valeurs en bytes.
+format_human_readable yes
+# réduit l'affichage des unités: kiB=k, GiB=G, … 'no' par défaut.
+short_units yes
+
+# //// MATERIEL ////
+# échantillon à prendre en compte pour le monitoring du cpu.
+cpu_avg_samples 4
+
+# //// EMAIL ////
+#imap gmail.com jvaillant@epsilon3d.com parano35 
 
 TEXT
 #$stippled_hr
@@ -43,10 +86,11 @@ $stippled_hr
 ${color1}Kernel: $alignr $kernel $color
 ${color3}Uptime: $alignr $uptime $color
 $stippled_hr
-SYSTEM
+#
+#### CPU
+#
+${color6}${font :size=11}Central Processing Unit :$font$color
 $stippled_hr
-
-${color6}Central Processing Unit :$color
 CPU1: ${alignr} ${cpu cpu1}%
 CPU2: ${alignr} ${cpu cpu2}%
 CPU3: ${alignr} ${cpu cpu3}%
@@ -55,68 +99,109 @@ ${cpugraph 20}
 Load: $alignr $loadavg
 Processes: $alignr $processes
 Running: $alignr $running_processes
-
-${color6}Memoire :$color
+$stippled_hr
+#
+#### Memoire
+#
+${color6}${font :size=11}Memoire :$font$color
+$stippled_hr
 RAM: $alignr $mem/$memmax
 ${membar 3}
 Swap: $alignr $swap / $swapmax
 ${swapbar 3}
 #
 $stippled_hr
-TOP
+${color6}${font :size=11}Processus :$font$color
 $stippled_hr
-
-${color6}Processus :$color
-Name $alignr PID     CPU%   MEM%
+CPU usage $alignr PID     CPU%   MEM%
 ${top name 1} $alignr ${top pid 1} ${top cpu 1} ${top mem 1}
 ${top name 2} $alignr ${top pid 2} ${top cpu 2} ${top mem 2}
 ${top name 3} $alignr ${top pid 3} ${top cpu 3} ${top mem 3}
-
 Mem usage
 ${top_mem name 1} $alignr ${top_mem pid 1} ${top_mem cpu 1} ${top_mem mem 1}
 ${top_mem name 2} $alignr ${top_mem pid 2} ${top_mem cpu 2} ${top_mem mem 2}
 ${top_mem name 3} $alignr ${top_mem pid 3} ${top_mem cpu 3} ${top_mem mem 3}
-
 $stippled_hr
-Temp
+#
+#### Disques
+#
+${color6}${font :size=11}Hard Disk Drive :$font$color
 $stippled_hr
-
-#CPU: ${alignr}${acpitemp}C
-GPU: $alignr ${execi 30 nvidia-settings -q [gpu:0]/GPUCoreTemp | grep '):' | awk '{print $4}' | sed 's/\.//'}C
-
-$stippled_hr
-#HDD
-$stippled_hr
-
-#I/O:
-
-#Write: $alignr $diskio_write
-#${diskiograph_write 20}
-#Read: $alignr $diskio_read
-#${diskiograph_read 20}
-
-ROOT: $alignr ${fs_free /} / ${fs_size /}
+Disque Systeme :$alignr Disque Home :
+$alignc Write: $diskio_write
+${diskiograph_write /dev/sda1 15,110 ffffff 000000 -t} \
+$alignr${diskiograph_write /dev/sdb2 15,110 ffffff 000000 -t}
+$alignc Read: $diskio_read
+${diskiograph_read /dev/sda1 15,115 ffffff 000000 -t} \
+$alignr${diskiograph_read /dev/sdb2 15,115 ffffff 000000 -t}
+SDA1 (/): $alignr ${fs_free /} / ${fs_size /}
 ${fs_bar 3 /}
-HOME: $alignr ${fs_free /home} / ${fs_size /home}
+SDB2 (/home/): $alignr ${fs_free /home} / ${fs_size /home}
 ${fs_bar 3 /home}
-#HDD1: $alignr ${fs_free /media/HDD1} / ${fs_size /media/HDD1}
-#${fs_bar 3 /media/HDD1}
-#HDD2: $alignr ${fs_free /media/HDD2} / ${fs_size /media/HDD2}
-#${fs_bar 3 /media/HDD2}
+#Dropbox (~/Reseaux/Dropbox): $alignr 2G
+#${execibar 1 $HOME/.config/conky_dropbox.sh}
+#Ubuntu One (~/Reseaux/UOne): $alignr 2G
+#${execibar 1 $HOME/.config/conkyubuntuone.sh}
+$stippled_hr
+#
+#### Reseau
+#
+${color6}${font :size=11}Network :$font$color
+$stippled_hr
+DL eth2 : ${downspeed eth2} k/s \
+$alignr${downspeedgraph eth2 15,100 FFFFFF 000000}
+Total telecharger : $alignr${totaldown eth2}
+UP eth2 : ${upspeed eth2} k/s \
+$alignr${upspeedgraph eth2 15,100 FFFFFF 000000}
+Total envoyer : $alignr${totalup eth2}
+$stippled_hr
+#
+#### Temperature
+#
+${color6}${font :size=11}Temperature :$font$color
+$stippled_hr
+#
+# Temperature du CPU
+${color2}CPU (Q6600 - 2.4GHz) : $color \
+${if_match "${platform coretemp.0 temp 2}" <= "55"} ${color5} \
+${else "${plateform coretemp.0 temp 2}" <= "70"} ${color3} \
+${else} ${color1} ${endif} \
+$alignr${platform coretemp.0 temp 2}°C$color
+# Fin temperature CPU
+#
+#$alignc Core 1 : ${execi 30 sensors | grep 'Core 0' | cut -c16-19}°C
+#$alignc Core 2 : ${execi 30 sensors | grep 'Core 1' | cut -c16-19}°C
+#$alignc Core 3 : ${execi 30 sensors | grep 'Core 2' | cut -c16-19}°C
+#$alignc Core 4 : ${execi 30 sensors | grep 'Core 3' | cut -c16-19}°C
+#
+# Temperature GPU
+${color2}GPU (8600GT) :$color \
+${if_match "${exec nvidia-settings -q GPUCoreTemp -t}" <= "75"} ${color5} \
+${else "${exec nvidia-settings -q GPUCoreTemp -t}" <= "90"} ${color3} \
+${else} ${color1} ${endif} \
+$alignr${exec nvidia-settings -q GPUCoreTemp -t}°C$color
+# Fin temperature GPU
+#
+# Temperature HDD
+${color2}HDD (sda) : $color \
+${if_match "${hddtemp /dev/sda}" <= "50"} ${color5} \
+${else "${hddtemp /dev/sda"}" <= "60"} ${color3} \
+${else} ${color1} ${endif} \
+$alignr${hddtemp /dev/sda}°C$color
+#
+${color2}HDD (sdb) : $color \
+${if_match "${hddtemp /dev/sdb}" <= "50"} ${color5} \
+${else "${hddtemp /dev/sdb"}" <= "60"} ${color3} \
+${else} ${color1} ${endif} \
+$alignr${hddtemp /dev/sdb}°C$color
+# Fin Temperature HDD
+#
 
-#$stippled_hr
-#Network
-#$stippled_hr
 
-#Down:
-#Speed: $alignr ${downspeed eth0} k/s
-#Tot: $alignr ${totaldown eth0}
 
-#${downspeedgraph eth0 20} ${alignr}${upspeedgraph eth0 20}
 
-#Up:
-#Speed: $alignr ${upspeed eth0} k/s
-#Tot: $alignr ${totalup eth0}
 
-#${upspeedgraph eth0 20} ${alignr}${upspeedgraph eth0 20}
+
+
+
 
