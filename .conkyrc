@@ -5,7 +5,7 @@ background yes
 color1  BA0000  #Rouge  - Temperature forte
 color2  D9EFF5  #Bleu   - 
 color3  FF8A00  #Orange - Temperature moyen
-color4  000000  #
+color4  9F008D  #Violet
 color5  15AF1C  #Vert   - Temperature correct
 color6  716FFF  #Bleu   - Titre
 # si 'own_window yes', determine le type de fenêtre utilisé par conky.
@@ -127,19 +127,33 @@ $stippled_hr
 #
 ${color6}${font :size=11}Hard Disk Drive :$font$color
 $stippled_hr
-Disque Systeme :$alignr Disque Home :
+${color3}Disque Systeme :$color$alignr${color4}Disque Home :$color
 $alignc Write: $diskio_write
-${diskiograph_write /dev/sda1 15,110 ffffff 000000 -t} \
-$alignr${diskiograph_write /dev/sdb2 15,110 ffffff 000000 -t}
+${color3}${diskiograph_write /dev/sda1 15,110 ffffff 000000 -t}$color \
+$alignr${color4}${diskiograph_write /dev/sdb2 15,110 ffffff 000000 -t}$color
 $alignc Read: $diskio_read
-${diskiograph_read /dev/sda1 15,115 ffffff 000000 -t} \
-$alignr${diskiograph_read /dev/sdb2 15,115 ffffff 000000 -t}
+${color3}${diskiograph_read /dev/sda1 15,115 ffffff 000000 -t}$color \
+$alignr${color4}${diskiograph_read /dev/sdb2 15,115 ffffff 000000 -t}$color
+#
+# Disque /
+${if_match "${fs_free /}" <= "40"}${color5} \
+${else "${fs_free /}" <= "45"}${color3}${else}${color1}${endif}
 SDA1 (/): $alignr ${fs_free /} / ${fs_size /}
-${fs_bar 3 /}
+${fs_bar 3 /}$color
+#
+# Disque /home
+${if_match "${fs_free /home}" <= "800"}${color5} \
+${else "${fs_free /home}" <= "850"}${color3}${else}${color1}${endif}
 SDB2 (/home/): $alignr ${fs_free /home} / ${fs_size /home}
-${fs_bar 3 /home}
-#Dropbox (~/Reseaux/Dropbox): $alignr 2G
-#${execibar 1 $HOME/.config/conky_dropbox.sh}
+${fs_bar 3 /home}$color
+#
+# Disque Dropbox
+${color5}
+Dropbox (~/Reseaux/Dropbox): $alignr ${exec $HOME/.config/conky_dropbox.sh}/ 2.5G
+${execibar 1 $HOME/.config/conky_dropbox.sh}
+$color
+#
+# Disque Ubuntu One
 #Ubuntu One (~/Reseaux/UOne): $alignr 2G
 #${execibar 1 $HOME/.config/conkyubuntuone.sh}
 $stippled_hr
@@ -196,12 +210,4 @@ ${else} ${color1} ${endif} \
 $alignr${hddtemp /dev/sdb}°C$color
 # Fin Temperature HDD
 #
-
-
-
-
-
-
-
-
-
+#####################
