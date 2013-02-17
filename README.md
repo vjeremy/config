@@ -1,6 +1,9 @@
 Config : Dossier et fichier de ma configuration linux
 ====
 
+Script de configuration :
+====
+
 Slim :
 ====
 
