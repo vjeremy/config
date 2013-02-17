@@ -72,10 +72,7 @@ short_units yes
 
 # //// MATERIEL ////
 # échantillon à prendre en compte pour le monitoring du cpu.
-cpu_avg_samples 4
-
-# //// EMAIL ////
-#imap gmail.com jvaillant@epsilon3d.com parano35 
+cpu_avg_samples 4 
 
 TEXT
 #$stippled_hr
